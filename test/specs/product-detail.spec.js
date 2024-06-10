@@ -102,7 +102,6 @@ describe ('Product Detail Page', () => {
     it ('user menekan tombol chat', async () => {
         await DetailPage.openPage();
         await DetailPage.chatButton();
-        await browser.pause(3000);
 
         //await expect (DetailPage.chatButton).toBeClickable();
     })
