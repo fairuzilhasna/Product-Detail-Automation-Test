@@ -1,4 +1,4 @@
-import {browser, $, expect } from '@wdio/globals';
+import {browser, expect } from '@wdio/globals';
 import DetailPage from '../pageobjects/product-detail.page.js';
 
 
@@ -20,7 +20,8 @@ describe ('Product Detail Page', () => {
         await browser.scroll(0, 300);
         await DetailPage.addProductToCart();
 
-        await expect(DetailPage.cartCountButton).toHaveText('1 items');
+        await expect (DetailPage.cartCountButton).toHaveText('1 items');
+        await expect (DetailPage.previewCartItem)===(DetailPage.productTitle);
     })
 
 
@@ -30,7 +31,7 @@ describe ('Product Detail Page', () => {
         await DetailPage.addProductToCart();
         await DetailPage.removeItemCartButton();
 
-        await expect(DetailPage.cartCountButton).toHaveText('0 items');
+        await expect (DetailPage.cartCountButton).toHaveText('0 items');
     })
 
 
@@ -51,7 +52,7 @@ describe ('Product Detail Page', () => {
         await DetailPage.removeItemCartButton();
         await DetailPage.emptyCheckoutButton();
 
-        await expect (DetailPage.openPage);
+        await expect (browser).toHaveUrl('https://erigostore.co.id/products/erigo-t-shirt-sashenka-olive');
     })
 
 
@@ -102,6 +103,7 @@ describe ('Product Detail Page', () => {
     it ('user menekan tombol chat', async () => {
         await DetailPage.openPage();
         await DetailPage.chatButton();
+        await browser.pause(2000);
 
         //await expect (DetailPage.chatButton).toBeClickable();
     })

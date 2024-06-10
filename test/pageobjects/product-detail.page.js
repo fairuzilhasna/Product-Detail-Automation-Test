@@ -8,6 +8,7 @@ class DetailPage {
     get CheckoutButton () { return  $('#cart-sidebar-checkout') }
     get checkoutPage () { return $('#checkout-main') }
     get cartButton () { return $('.cart-text') }
+    get previewCartItem () { return $ ('.previewCartItem-name.link-underline') }
     get removeButton () { return  $('.previewCartItem-remove') }
     get emptyCheckout () { return $('a[class="button button-2 button-continue"]') }
     get cartSidebar () { return $('#halo-cart-sidebar') }
