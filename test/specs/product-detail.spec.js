@@ -1,21 +1,17 @@
 import {browser, $, expect } from '@wdio/globals';
-import findProduct from '../pageobjects/product.page.js';
 import DetailPage from '../pageobjects/product-detail.page.js';
-import cartPage from '../pageobjects/cart.page.js';
-import cartCount from '../pageobjects/cart-count.page.js';
-import cartCheckout from '../pageobjects/cart-checkout.js';
-import removeItemCart from '../pageobjects/remove-item-cart.page.js'
-import wishlistPage from '../pageobjects/wishlist.page.js';
+
 
 
 describe ('Product Detail Page', () => {
     it ('user memilih produk', async () => {
-        await findProduct.mainPage();
-        await findProduct.clickAllProduct();
-        await $('a[title="Erigo T-Shirt Sashenka Olive"]').click();
+        await DetailPage.mainPage();
+        await DetailPage.clickAllProduct();
+        await browser.scroll(0, 150)
+        await DetailPage.chooseOneProduct();
 
         await expect (DetailPage.openPage);
-        await expect ($('h1[class="productView-title"]')).toHaveText('Erigo T-Shirt Sashenka Olive');
+        await expect (DetailPage.productTitle).toHaveText('Erigo T-Shirt Sashenka Olive');
     }) 
 
 
@@ -24,7 +20,7 @@ describe ('Product Detail Page', () => {
         await browser.scroll(0, 300);
         await DetailPage.addProductToCart();
 
-        await expect(cartCount.cartCountButton).toHaveText('1 items');
+        await expect(DetailPage.cartCountButton).toHaveText('1 items');
     })
 
 
@@ -32,9 +28,9 @@ describe ('Product Detail Page', () => {
         await DetailPage.openPage();
         await browser.scroll(0, 300);
         await DetailPage.addProductToCart();
-        await removeItemCart.removeItemCartButton();
+        await DetailPage.removeItemCartButton();
 
-        await expect(cartCount.cartCountButton).toHaveText('0 items');
+        await expect(DetailPage.cartCountButton).toHaveText('0 items');
     })
 
 
@@ -42,18 +38,18 @@ describe ('Product Detail Page', () => {
         await DetailPage.openPage();
         await browser.scroll(0, 300);
         await DetailPage.addProductToCart();
-        await $('label[for="sidebar_cart_conditions"]').click();
-        await cartCheckout.cartCheckoutButton();
+        await DetailPage.conditionButton();
+        await DetailPage.cartCheckoutButton();
 
-        await expect ($('#checkout-main')).toBeDisplayed();
+        await expect (DetailPage.checkoutPage).toBeDisplayed();
     })
 
 
     it ('user menekan tombol check out saat tidak ada produk di keranjang' , async () => {
         await DetailPage.openPage();
-        await cartPage.cartButtonPage();
-        await removeItemCart.removeItemCartButton();
-        await $('a[class="button button-2 button-continue"]').click();
+        await DetailPage.cartButtonPage();
+        await DetailPage.removeItemCartButton();
+        await DetailPage.emptyCheckoutButton();
 
         await expect (DetailPage.openPage);
     })
@@ -61,56 +57,53 @@ describe ('Product Detail Page', () => {
 
     it ('user membuka keranjang', async () => {
         await DetailPage.openPage();
-        await cartPage.cartButtonPage();
+        await DetailPage.cartButtonPage();
 
-        await expect ($('#halo-cart-sidebar')).toBeDisplayed();
+        await expect (DetailPage.cartSidebar).toBeDisplayed();
     })
 
 
     it ('user menutup keranjang', async () => {
         await DetailPage.openPage();
-        await cartPage.cartButtonPage();
+        await DetailPage.cartButtonPage();
         await browser.pause(2000);
-        await $('button[class="halo-sidebar-close button-effect"]').click();
+        await DetailPage.closeSidebarButton();
 
-        await expect ($('#halo-cart-sidebar')).not.toBeDisplayed();
+        await expect (DetailPage.cartSidebar).not.toBeDisplayed();
     })
 
 
     it ('user menekan tombol wish list', async () => {
         await DetailPage.openPage();
-        await wishlistPage.wishlistButtonPage();
+        await DetailPage.wishlistButtonPage();
 
         await expect (browser).toHaveUrl('https://erigostore.co.id/pages/wish-list')
-        await expect ($('h1[class="page-header text-left"]')).toHaveText('WISH LIST');
+        await expect (DetailPage.wishlistHeader).toHaveText('WISH LIST');
     })
 
 
-    it.skip ('user menekan tombol chat', async () => {
+    it ('user menambah kuantitas produk', async () => {
         await DetailPage.openPage();
+        await DetailPage.plusButton();
+
+        await expect (DetailPage.quantityProduct).toHaveValue('2');
+    })
+
+
+    it ('user mengurangi kuantitas produk', async () => {
+        await DetailPage.openPage();
+        await DetailPage.plusButton();
+        await DetailPage.minusButton();
+
+        await expect (DetailPage.quantityProduct).toHaveValue('1');
+    })
+
+
+    it ('user menekan tombol chat', async () => {
+        await DetailPage.openPage();
+        await DetailPage.chatButton();
         await browser.pause(3000);
-        await $('svg[data-spec="button-icon"]').click();
 
-        // Can't call click on element with selector "button[class="chat-toggle chat-toggle--#000000 chat-toggle--icon-button chat-toggle--text-button chat-toggle--bottom-right"]" because element wasn't found
+        //await expect (DetailPage.chatButton).toBeClickable();
     })
-
-
-    it.skip ('user menambah kuantitas produk', async () => {
-        await DetailPage.openPage();
-        await $('button[class="plus btn-quantity"]').click();
-
-        //ini ngga bisa, error:  Element <button type="button" name="plus" data-plus-quantity-quickshop="" class="plus btn-quantity"></button> not interactable
-    })
-
-
-    it.skip ('user mengurangi kuantitas produk', async () => {
-        await DetailPage.openPage();
-        await $('button[class="plus btn-quantity"]').click();
-        await $('button[class="minus btn-quantity"]').click();
-    })
-
-
-    // it ('user memilih produk yang habis stok', async () => {
-        
-    // })
 })
